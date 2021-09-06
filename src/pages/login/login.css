@@ -1,0 +1,45 @@
+.login-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-image: url('imgs/bg.jpg');
+  background-size: 100% 100%;
+}
+.login-box .header {
+  flex: 0.1;
+  display: flex;
+  align-items: center;
+  background-color: rgba(21, 20, 13, 0.5);
+}
+.login-box .header .img-box {
+  margin: 0 20px;
+}
+.login-box .header .img-box img {
+  max-width: 30px;
+  max-height: 30px;
+  border-radius: 15%;
+}
+.login-box .header span {
+  font-size: 16px;
+  color: #fff;
+}
+.login-box .content {
+  flex: 0.9;
+  position: relative;
+  height: 100%;
+}
+.login-box .content .login-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  width: 50%;
+  height: 50%;
+  padding: 5px;
+}
+.login-box .content .login-window .login-window-header {
+  text-align: center;
+  font-size: 16px;
+}
