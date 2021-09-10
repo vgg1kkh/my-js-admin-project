@@ -4,7 +4,6 @@ import { message } from 'antd'
 
 const ajax = (url,data,method="GET") => {
     
-
     return new Promise((resolve,reject)=>{
         //inner promise
         let promise

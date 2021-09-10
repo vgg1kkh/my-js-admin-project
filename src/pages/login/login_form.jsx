@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Form, Input, Button, message } from 'antd';
 import { reqLogin } from '../../api';
-
+import memory from '../../utils/memoryUtils';
+import store from '../../utils/storageUtils'
 
 
 const LoginForm = (props) => {
@@ -14,7 +15,12 @@ const LoginForm = (props) => {
         const re = await reqLogin(values.username, values.password)
         if(re.status===0){
             message.success("Login successful!")
-            // redirect to the admin page
+            //save the user info into memory
+            memory.user = re.data
+            //save the user info into harddisk
+            store.set(re.data)
+            // redirect to the admin page with replace  
+            props.replace('/')
 
         }else{
             message.error("Username or Password error")
