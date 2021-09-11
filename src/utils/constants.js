@@ -1,5 +1,6 @@
 
 
-export const BASE:string = ''
+export const BASE = ''
+export const PAGE_SIZE = '3'
 
 

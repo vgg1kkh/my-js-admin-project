@@ -32,3 +32,15 @@ export const reqCategory = parentId => ajax(BASE+'/manage/category/list', {paren
 //Update the category
 export const reqUpdateCategory = (categoryId,categoryName) => 
 ajax(BASE+'/manage/category/update',{categoryId,categoryName} ,"POST")
+
+//Add new category
+export const reqAddCategory = (parentId, categoryName) =>
+    ajax(BASE+'/manage/category/add', {parentId, categoryName},"POST")
+
+//Get the product list
+export const reqProductList = (pageNum, pageSize) =>
+    ajax(BASE+'/manage/product/list',{pageNum, pageSize})
+
+//Search product by category or desc
+export const reqSearchProduct = ({pageNum,pageSize,searchName,searchType}) => 
+    ajax(BASE+'/manage/product/search',{pageNum,pageSize,[searchType]:searchName})

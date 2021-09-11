@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Button, Table, message, Modal, Form } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import LinkButton from '../../components/link-button'
-import { reqCategory } from '../../api'
+import { reqAddCategory, reqCategory, reqUpdateCategory } from '../../api'
 import UpdateForm from './update-form'
 import AddForm from './add-form'
 
@@ -12,28 +12,68 @@ import AddForm from './add-form'
 export default function Category(props) {
 
     const [categorys, setCategorys] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [parentId, setparentId] = useState("0")
-    const [parentName, setParentName] = useState("")
     const [subCategorys, setSubCategorys] = useState([])
+    const [parentId, setparentId] = useState("0")
+    const [loading, setLoading] = useState(false)
+    const [parentName, setParentName] = useState("")
     const [isModalVisible, setIsModalVisible] = useState(0);
     const [updateForm] = Form.useForm()
+    const [addForm] = Form.useForm()
+
+    const [currentCategory, setCurrentCategory] = useState({})
     // const formREF = useRef()
 
 
     //method for modal starts here
-    const showModalCategory = () => {
+    const showModalCategory = (category) => {
+        /* 
+        important:
+        Update the cateogory name b4 set the modal visible
+        the category name will not be display otherwise
+        */
+        setCurrentCategory(category)
         setIsModalVisible(1);
+
     };
 
     const showModalAdd = () => {
         setIsModalVisible(2);
     };
 
-    const handleOk = async () => {
-        console.log(await updateForm.getFieldsValue())
-        setIsModalVisible(0);
+    const handleUpdateCatOk = () => {
+        updateForm.validateFields()
+            .then(async value => {
+                const re = await reqUpdateCategory(currentCategory._id, value.category_name)
+                if (re.status === 0) {
+                    getCategory()
+                } else {
+                    message.error("Category modify failed.")
+                }
+                setIsModalVisible(0)//close the modal
+            })
+            .catch(reason => console.log("Pls input valid reason"))
+
     };
+
+    const handleAddFormOk = async () => {
+        // const re = await addForm.getFieldsValue()
+        // console.log(re);
+        //{select: '0', categoryName: 'fffff'}
+        addForm.validateFields()
+            .then(async values => {
+                const re = await reqAddCategory(values.select, values.categoryName)
+                console.log(re);
+                if (re.status === 0) {
+                    getCategory()
+                } else {
+                    message.error("Add new category failed.")
+                }
+                setIsModalVisible(0) //close the modal
+            })
+            .catch(reason => console.log(reason))
+
+
+    }
 
     const handleCancel = () => {
         setIsModalVisible(0);
@@ -55,11 +95,10 @@ export default function Category(props) {
             width: 200,
             render: (category) => {
                 return <>
-                    <LinkButton onClick={showModalCategory}>Modify</LinkButton>&nbsp;&nbsp;&nbsp;
+                    <LinkButton onClick={() => showModalCategory(category)}>Modify</LinkButton>&nbsp;&nbsp;&nbsp;
                     {parentId === "0" ?
                         (<LinkButton onClick={() => showSubCategorys(category)}>
                             Sub category</LinkButton>) : null}
-
                 </>
             }
         },
@@ -125,15 +164,25 @@ export default function Category(props) {
                 loading={loading}
             />
         </Card>
-        <Modal title="Modify" visible={isModalVisible === 1 ? true : false} onOk={handleOk} onCancel={handleCancel}>
-            <UpdateForm form={updateForm}/>
+        <Modal title="Modify" visible={isModalVisible === 1 ? true : false}
+            onOk={handleUpdateCatOk} onCancel={handleCancel}
+            destroyOnClose={true}
+        >
+            <UpdateForm
+                form={updateForm} defaultName={currentCategory.name}
+            />
         </Modal>
-        <Modal title="Add" visible={isModalVisible === 2 ? true : false} onOk={handleOk} onCancel={handleCancel}>
-                <AddForm />
+        <Modal title="Add" visible={isModalVisible === 2 ? true : false}
+            onOk={handleAddFormOk} onCancel={handleCancel}
+            destroyOnClose={true}
+        >
+            <AddForm
+                form={addForm}
+                categorys={categorys}
+                subCategorys={subCategorys}
+                parentId={parentId}
+                parentName={parentName}
+            />
         </Modal>
     </>
-
-
-
-
 }
