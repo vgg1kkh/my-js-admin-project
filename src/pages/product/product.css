@@ -1,0 +1,13 @@
+.product-detail .product-detail-left {
+  justify-content: left !important;
+  font-size: 20px;
+}
+.product-detail .product-detail-left .product-img {
+  width: 80px;
+  height: 80px;
+  margin-left: 10px;
+}
+.product-detail .left {
+  margin-right: 15px;
+  font-weight: 700;
+}

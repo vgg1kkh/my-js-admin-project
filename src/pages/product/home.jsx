@@ -7,12 +7,12 @@ import { PAGE_SIZE } from '../../utils/constants'
 
 const { Option } = Select
 
-export default function ProductHome() {
+export default function ProductHome(props) {
 
     const [productList, setProductList] = useState([])
     const [loading, setLoading] = useState(false)
     const [total, setTotal] = useState(0)
-    const [pageNum, setPageNum] = useState(1)
+    // const [pageNum, setPageNum] = useState(1)
     const [selectData,setSelectData] = useState('')
     const [inputData,setInputData] = useState('')
 
@@ -56,8 +56,10 @@ export default function ProductHome() {
         {
             width: 100,
             title: 'Operation',
-            render: () => (<>
-                <LinkButton>detail</LinkButton>
+            render: (product) => (<>
+                <LinkButton 
+                onClick={()=> props.history.push('/product/detail',{product})}>
+                detail</LinkButton>
                 <LinkButton>update</LinkButton>
             </>)
         },
@@ -73,10 +75,10 @@ export default function ProductHome() {
         }
         setLoading(false)
         if (re.status === 0) {
-            const {pageNum,total} = re.data
+            const {total} = re.data
             setProductList(re.data.list)
             setTotal(total)
-            setPageNum(pageNum)
+            // setPageNum(pageNum)
         } else {
             message.error("Failed to get the product list")
         }
@@ -97,6 +99,7 @@ export default function ProductHome() {
     //Get the productList at the beginning
     useEffect(() => {
         getProductList(1)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return <>

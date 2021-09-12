@@ -44,3 +44,6 @@ export const reqProductList = (pageNum, pageSize) =>
 //Search product by category or desc
 export const reqSearchProduct = ({pageNum,pageSize,searchName,searchType}) => 
     ajax(BASE+'/manage/product/search',{pageNum,pageSize,[searchType]:searchName})
+
+//Get category name by parentId
+export const reqCategoryName= categoryId => ajax(BASE + "/manage/category/info", {categoryId})

@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# API document
+/api/api document.md
+
 # testing
 /coverage
 
