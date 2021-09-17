@@ -7,8 +7,8 @@ export const reqLogin = (username, password) =>
     ajax(BASE + '/login', { username, password }, "POST")
 
 
-export const reqAddUser = (user) =>
-    ajax(BASE + '/manage/user/add', user, "POST")
+export const reqAddOrUpdateUser = (user) =>
+    ajax(BASE + '/manage/user/'+(user._id? 'update':'add'), user, "POST")
 
 //Get the Weather
 export const reqWeather = () => {
@@ -42,8 +42,12 @@ export const reqProductList = (pageNum, pageSize) =>
     ajax(BASE + '/manage/product/list', { pageNum, pageSize })
 
 //Search product by category or desc
-export const reqSearchProduct = ({ pageNum, pageSize, searchName, searchType }) =>
-    ajax(BASE + '/manage/product/search', { pageNum, pageSize, [searchType]: searchName })
+export const reqSearchProduct = ({ pageNum, pageSize, searchName, searchType }) => {
+    console.log("searchItem = ", searchName);
+    console.log("searchType =",searchType);
+    return ajax(BASE + '/manage/product/search', { pageNum, pageSize, [searchType]: searchName })
+}
+    
 
 //Get category name by parentId
 export const reqCategoryName = categoryId => ajax(BASE + "/manage/category/info", { categoryId })
@@ -53,4 +57,27 @@ export const reqUpdateAvailability = ({ productId, status }) =>
     ajax(BASE + "/manage/product/updateStatus", { productId, status }, "POST")
 
 //Remove the photo
-export const reqDeleteImg = name => ajax(BASE + "/manage/img/delete",{name},"POST")
+export const reqDeleteImg = name => ajax(BASE + "/manage/img/delete", { name }, "POST")
+
+//Add new product
+export const reqAddProduct = (product) =>
+    ajax(BASE + "/manage/product/"+ (product._id? "update":"add"), product, "POST")
+
+//Update product
+export const reqUpdateProduct = product =>
+    ajax(BASE + "/manage/product/update", product, "POST")
+
+//Get role list
+export const reqRoles = () => ajax(BASE + "/manage/role/list")
+
+//Add new role
+export const reqAddRole = roleName => ajax(BASE + "/manage/role/add", {roleName},"POST")
+
+//Update Role
+export const reqUpdateRole = role => ajax(BASE+"/manage/role/update",role,"POST")
+
+//Get UserList
+export const reqUsers = () => ajax(BASE + "/manage/user/list")
+
+//Del User
+export const reqDelUser = userId => ajax(BASE + "/manage/user/delete",{userId},"POST")

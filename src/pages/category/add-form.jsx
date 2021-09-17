@@ -28,7 +28,7 @@ export default function AddForm(props) {
     return (
         <Form onFinish={onFinish}
             form={props.form}
-            preserve={false} // important to reset the closed field
+            preserve={false} // !important to reset the closed field
         >
             <Item initialValue={parentId}
                 name="select"

@@ -82,10 +82,13 @@ export default function ProductHome(props) {
     ];
 
     const getProductList = async (pageNum, pageSize) => {
+        setPageNum(pageNum)
         setLoading(true)
         let re
         if (selectData && inputData) {
-            re = await reqSearchProduct({ pageNum, pageSize: PAGE_SIZE, searchName: inputData, searchType: selectData === 0 ? "productName" : "productDesc" })
+            // console.log("selectData=",selectData);      
+            re = await reqSearchProduct({ pageNum, pageSize: PAGE_SIZE, searchName: inputData, searchType: selectData === "0" ? "productName" : "productDesc" })
+            // console.log("re=",re);
         } else {
             re = await reqProductList(pageNum, PAGE_SIZE)
         }
@@ -96,7 +99,7 @@ export default function ProductHome(props) {
             // console.log("list=", list);
             setTotal(total)
             // setPageNum(pageNum)
-            setPageNum(pageNum)
+            
         } else {
             message.error("Failed to get the product list")
         }
@@ -130,6 +133,7 @@ export default function ProductHome(props) {
                 pagination={{
                     defaultPageSize: PAGE_SIZE,
                     total: total,
+                    current: pageNum, //fix the bug
                     showQuickJumper: true,
                     onChange: getProductList
                 }}

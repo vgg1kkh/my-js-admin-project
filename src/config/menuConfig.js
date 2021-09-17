@@ -3,7 +3,8 @@ const menuList = [
     {
         key: '/home',
         icon: 'PieChartOutlined',
-        title: 'Home'
+        title: 'Home',
+        isPublic: true
     },
     {
         title: 'Goods',
@@ -39,17 +40,17 @@ const menuList = [
         icon: 'PieChartOutlined',
         children: [ // 子菜单列表
             {
-                key: '/pie',
+                key: '/charts/pie',
                 icon: 'PieChartOutlined',
                 title: 'Pie'
             },
             {
-                key: '/line',
+                key: '/charts/line',
                 icon: 'PieChartOutlined',
                 title: 'Line'
             },
             {
-                key: '/bar',
+                key: '/charts/bar',
                 icon: 'PieChartOutlined',
                 title: 'Bar'
             },

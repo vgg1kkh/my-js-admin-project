@@ -18,8 +18,8 @@ const { Footer, Sider, Content } = Layout
 const Admin = (props) => {
 
     if (!memory.user.username) {
-        console.log(memory.user.username);
-        console.log("redirect to login page");
+        // console.log(memory.user.username);
+        // console.log("redirect to login page");
         return <Redirect to="/login" />       
     }
     return <>
@@ -35,14 +35,12 @@ const Admin = (props) => {
                         <Route path="/product" component={Product} />
                         <Route path="/role" component={Role} />
                         <Route path="/user" component={User} />
-                        <Route path="/pie" component={Pie} />
-                        <Route path="/line" component={Line} />
-                        <Route path="/bar" component={Bar} />
+                        <Route path="/charts/pie" component={Pie} />
+                        <Route path="/charts/line" component={Line} />
+                        <Route path="/charts/bar" component={Bar} />
                         <Route path="/category" component={Category} />
                         <Redirect to="/home" />
                     </Switch>
-
-
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Created by TOM HU</Footer>
             </Layout>

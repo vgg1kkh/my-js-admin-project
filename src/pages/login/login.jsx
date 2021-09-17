@@ -9,7 +9,7 @@ import memory from '../../utils/memoryUtils'
 const Login = (props) => {
     
     //varify if user has logged in, redirect to the admin page if it exists
-    console.log(memory.user.username);
+    // console.log(memory.user.username);
     if(memory.user.username){
         props.history.replace('/')
         // props.history.replace('/')

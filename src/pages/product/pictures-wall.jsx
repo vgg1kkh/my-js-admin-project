@@ -2,6 +2,7 @@ import React from 'react'
 import { Upload, Modal, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
 import { reqDeleteImg } from '../../api';
+import { BASE_IMG_URL } from '../../utils/constants';
 
 function getBase64(file) {
     return new Promise((resolve, reject) => {
@@ -48,11 +49,30 @@ class PicturesWall extends React.Component {
             }
         } else if (file.status === 'removed') {
             const re = await reqDeleteImg(file.name)
+            if(re.status===0) {
+                message.success("Delete file success.")
+            }else message.error("Delete file failed.")
         }
         this.setState({ fileList });
     }
 
     getImgs = () => this.state.fileList.map(item => item.name)
+
+    componentDidMount(){
+        const {imgs} = this.props
+        if(imgs && imgs.length>0) {
+           const newFileList = imgs.map((item,index)=> (
+               {
+                uid: -index,
+                name: item,
+                status: 'done',
+                url: BASE_IMG_URL + item
+               }
+           ))
+           this.setState({fileList : newFileList})
+        }
+        console.log("DidMount",this.props.imgs);
+    }
 
     render() {
         const { previewVisible, previewImage, fileList, previewTitle } = this.state;

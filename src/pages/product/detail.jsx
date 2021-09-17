@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, List, message } from 'antd'
 import "./product.less"
 import { ArrowRightOutlined } from '@ant-design/icons'

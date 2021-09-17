@@ -3,8 +3,9 @@ import { Card, Form, Input, Button, Cascader, message } from 'antd'
 import LinkButton from '../../components/link-button'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useForm } from 'antd/lib/form/Form'
-import { reqCategory } from '../../api'
+import { reqAddProduct, reqCategory } from '../../api'
 import PicturesWall from './pictures-wall'
+import RichTextEditor from './rich-text-editor'
 
 export default function ProductAddUpdate(props) {
 
@@ -15,10 +16,12 @@ export default function ProductAddUpdate(props) {
 
   const [selected, setSelected] = useState([])
 
+  const [editor, setEditor] = useState(<p />)
+
   const ref1 = React.useRef()
 
   let isUpdate = false
-  let product
+  let product = {}
   let updateProductCategoryId = []
   if (props.location.state) {
     product = props.location.state
@@ -32,9 +35,41 @@ export default function ProductAddUpdate(props) {
     }
 
   }
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log("values=", values);
     console.log(ref1.current.getImgs());
+    console.log(editor)
+
+    const { name, desc, price, category } = values
+    const imgs = ref1.current.getImgs()
+    const detail = editor
+    console.log("category = ", category);
+
+    let pCategoryId, categoryId
+    if (category.length === 2) {
+      pCategoryId = category[0]
+      categoryId = category[1]
+    } else {
+      pCategoryId = "0"
+      categoryId = category[0]
+    }
+
+    let newProduct
+    if (isUpdate) {
+      newProduct = { pCategoryId, category, imgs, _id: product._id, detail, price, desc, name }
+    } else {
+      newProduct = { pCategoryId, categoryId, imgs, detail, price, desc, name }
+    }
+
+    const re = await reqAddProduct(newProduct)
+    if (re.status === 0) {
+      message.success("update success.")
+      props.history.goBack()
+    } else {
+      message.error("update failed.")
+    }
+
+
   }
 
   const onFinishFailed = () => {
@@ -98,7 +133,7 @@ export default function ProductAddUpdate(props) {
           isLeaf: true
         }
       ))
-      const targetOption = options.find(item=> item.value===product.pCategoryId)
+      const targetOption = options.find(item => item.value === product.pCategoryId)
       targetOption.children = childrenOptions
     }
     setOptions([...options])
@@ -186,11 +221,34 @@ export default function ProductAddUpdate(props) {
           // defaultValue={["613af779e5a75a9d047bd995"]}
           />
         </Form.Item>
-        <Form.Item name="img" label="Photos" >
-          <div>Photos</div>
+        <Form.Item name="img" label="Photos"
+          rules={[
+            {
+              validator: () => {
+                const re = ref1.current.getImgs()
+                // console.log("re=",re.length);
+                if (re.length !== 0) {
+                  return Promise.resolve()
+                } else return Promise.reject("Pls upload a photo")
+              }
+            }]
+          }
+        >
+          <PicturesWall ref={ref1} imgs={product.imgs} />
         </Form.Item>
-        <Form.Item name="details" label="Details" >
-          <PicturesWall ref={ref1}/>
+        <Form.Item name="details" label="Details"
+          rules={[
+            {
+              validator: () => {
+                const re = editor
+                console.log("re=", re.length);
+                if (re.length > 8) return Promise.resolve()
+                else return Promise.reject('Pls input something')
+              }
+            }]}
+        >
+          <RichTextEditor setEditor={setEditor} detail={product.detail}>
+          </RichTextEditor>
         </Form.Item>
         <Button type="primary" htmlType="submit" form="basic"
           style={{ transform: 'translate(150%)' }}>
