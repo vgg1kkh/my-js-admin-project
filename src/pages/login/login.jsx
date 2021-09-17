@@ -1,12 +1,20 @@
 import * as React from 'react'
 import './login.less'
-import logo from './imgs/birdy2.jpg'
+import logo from '../../assets/imgs/birdy2.jpg'
 import LoginForm from './login_form'
+import memory from '../../utils/memoryUtils'
 
 
 //The login page
 const Login = (props) => {
-    const {push} = props.history
+    
+    //varify if user has logged in, redirect to the admin page if it exists
+    // console.log(memory.user.username);
+    if(memory.user.username){
+        props.history.replace('/')
+        // props.history.replace('/')
+    }
+    const { replace } = props.history
     return (
         <div className="login-box">
             <header className="header">
@@ -19,7 +27,7 @@ const Login = (props) => {
                 <div className="login-window">
                     <header className="login-window-header">LOGIN</header>
                     <section className="login-window-body">
-                        <LoginForm />
+                        <LoginForm replace={replace}/>
                     </section>
 
                 </div>
