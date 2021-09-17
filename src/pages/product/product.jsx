@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import ProductAddUpdate from './add_update'
 import ProductHome from './home'
 import Detail from './detail'
+import ProductAddUpdate from './addUpdate'
 
 export default function Product() {
     return <>

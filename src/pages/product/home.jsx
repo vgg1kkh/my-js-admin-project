@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Input, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { reqProductList, reqSearchProduct } from '../../api'
+import { reqProductList, reqSearchProduct, reqUpdateAvailability } from '../../api'
 import LinkButton from '../../components/link-button'
 import { PAGE_SIZE } from '../../utils/constants'
 
@@ -12,20 +12,33 @@ export default function ProductHome(props) {
     const [productList, setProductList] = useState([])
     const [loading, setLoading] = useState(false)
     const [total, setTotal] = useState(0)
-    // const [pageNum, setPageNum] = useState(1)
-    const [selectData,setSelectData] = useState('')
-    const [inputData,setInputData] = useState('')
+    const [pageNum, setPageNum] = useState(1)
+    const [selectData, setSelectData] = useState('')
+    const [inputData, setInputData] = useState('')
 
     //Collect Select data
-    const handleSelectData = value=> setSelectData(value)
-    
+    const handleSelectData = value => setSelectData(value)
+
     //Collect Input data
     const handleInputData = e => setInputData(e.target.value);
+
+    //Change the product status
+    const changeAvailability = async product => {
+        let { _id, status } = product
+        status = status === 1 ? 2 : 1
+        // console.log("origin status vs new status=",product,status);
+        await reqUpdateAvailability({ productId: _id, status })
+        // console.log("re=",re);
+        getProductList(pageNum)
+    }
 
 
 
     const extra = (<>
-        <Button type="primary"><PlusOutlined />Add product</Button>
+        <Button type="primary"
+            onClick={() => props.history.push('/product/addupate')}>
+            <PlusOutlined />Add product
+        </Button>
     </>)
 
     const columns = [
@@ -46,21 +59,24 @@ export default function ProductHome(props) {
         {
             width: 100,
             title: 'Status',
-            dataIndex: 'status',
-            render: status => <>
-                <Button type="primary" style={{ fontSize:'12px',width: '110px' }}>{status === 1 ? "set unavailable" : "put on rack"}
+
+            render: product => <>
+                <Button type="primary"
+                    style={{ fontSize: '12px', width: '110px' }}
+                    onClick={() => changeAvailability(product)}>
+                    {product.status === 1 ? "set unavailable" : "put on rack"}
                 </Button><br />
-                {status === 1 ? "availabe" : "soldout"}
+                {product.status === 1 ? "availabe" : "soldout"}
             </>,
         },
         {
             width: 100,
             title: 'Operation',
             render: (product) => (<>
-                <LinkButton 
-                onClick={()=> props.history.push('/product/detail',{product})}>
-                detail</LinkButton>
-                <LinkButton>update</LinkButton>
+                <LinkButton
+                    onClick={() => props.history.push('/product/detail', { product })}>
+                    detail</LinkButton>
+                <LinkButton onClick={() => props.history.push('/product/addupate',product)}>update</LinkButton>
             </>)
         },
     ];
@@ -68,31 +84,33 @@ export default function ProductHome(props) {
     const getProductList = async (pageNum, pageSize) => {
         setLoading(true)
         let re
-        if(selectData && inputData){
-            re = await reqSearchProduct({pageNum,pageSize:PAGE_SIZE,searchName:inputData,searchType:selectData===0?"productName":"productDesc"})
-        }else{
+        if (selectData && inputData) {
+            re = await reqSearchProduct({ pageNum, pageSize: PAGE_SIZE, searchName: inputData, searchType: selectData === 0 ? "productName" : "productDesc" })
+        } else {
             re = await reqProductList(pageNum, PAGE_SIZE)
         }
         setLoading(false)
         if (re.status === 0) {
-            const {total} = re.data
-            setProductList(re.data.list)
+            const { total, list } = re.data
+            setProductList(list)
+            // console.log("list=", list);
             setTotal(total)
             // setPageNum(pageNum)
+            setPageNum(pageNum)
         } else {
             message.error("Failed to get the product list")
         }
     }
 
     const title = (<>
-        <Select 
-        onChange={handleSelectData}
-        name="title" id="" style={{ width: '140px' }}>
+        <Select
+            onChange={handleSelectData}
+            name="title" id="" style={{ width: '140px' }}>
             <Option value="0">By Name</Option>
             <Option value="1">By Description</Option>
         </Select>
-        <Input   onChange={handleInputData} style={{ width: '140px', margin: '0px 20px' }} />
-        <Button type="primary" onClick={()=>getProductList(1)}>Search</Button>
+        <Input onChange={handleInputData} style={{ width: '140px', margin: '0px 20px' }} />
+        <Button type="primary" onClick={() => getProductList(1)}>Search</Button>
     </>
     )
 
@@ -105,16 +123,16 @@ export default function ProductHome(props) {
     return <>
         <Card title={title} extra={extra} >
             <Table columns={columns}
-                rowkey={'_id'}
+                rowKey={'_id'}
                 dataSource={productList}
                 bordered
                 loading={loading}
                 pagination={{
-                    defaultPageSize:PAGE_SIZE,
-                    total:total,
-                    showQuickJumper:true,
-                    onChange:getProductList
-                 }} 
+                    defaultPageSize: PAGE_SIZE,
+                    total: total,
+                    showQuickJumper: true,
+                    onChange: getProductList
+                }}
             />
         </Card>
 

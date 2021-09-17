@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import { Card, List, message } from 'antd'
 import "./product.less"
 import { ArrowRightOutlined } from '@ant-design/icons'
-import logo from "../../assets/imgs/birdy2.jpg"
-import { reqCategoryName } from '../../api';
-import { BASE_IMG_URL } from '../../utils/constants';
+import { reqCategoryName } from '../../api'
+import { BASE_IMG_URL } from '../../utils/constants'
 import LinkButton from '../../components/link-button'
+
 
 
 export default function Detail(props) {
 
     const [categoryName, setCategoryName] = useState("")
-    const [parentCategoryName, setParentCategoryName] = useState("")
+    const [parentCategoryName, setParentCategoryName] = useState("")  
 
     const { product } = props.location.state
     // console.log(product);
@@ -40,7 +40,7 @@ export default function Detail(props) {
     useEffect(() => {
 
         getProductName(product.categoryId, product.pCategoryId)
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return <>
@@ -74,6 +74,7 @@ export default function Detail(props) {
                                 alt="Haha" />
                         })}
                     </span>
+                    
                 </List.Item>
                 <List.Item className="product-detail-left">
                     <span className="left">Product Details</span>
